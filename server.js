@@ -14,7 +14,7 @@ const express = require("express");
 const projectData = require("./modules/projects");
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 
 // Initialize project data before starting the server
 projectData.initialize()
