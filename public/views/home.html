@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Climate Solutions</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"></head>
+<body class="bg-gray-50 font-sans">
+    <nav class="bg-gray-800 p-6">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="/" class="text-white text-10xl font-bold">Climate Solutions</a>
+            <div class="space-x-6">
+                <a href="/about" class="text-white text-lg hover:text-gray-400 transition">About</a>
+                <div class="relative inline-block">
+                    <button class="text-white text-lg hover:text-gray-400 transition">Sector</button>
+                    <div class="dropdown-content absolute hidden bg-white shadow-lg w-48 mt-2 rounded-lg">
+                        <a href="/solutions/projects?sector=agriculture" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Agriculture</a>
+                        <a href="/solutions/projects?sector=industry" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Industry</a>
+                        <a href="/solutions/projects?sector=energy" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Energy</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto p-6">
+        <div class="text-center bg-blue-100 p-8 rounded-lg shadow-lg">
+            <h1 class="text-4xl font-semibold text-gray-800">Welcome to Climate Solutions</h1>
+            <p class="mt-4 text-lg text-gray-600">Explore innovative projects tackling climate change.</p>
+            <a href="/solutions/projects" class="inline-block mt-6 py-2 px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">View Projects</a>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-10">
+            <div class="card p-6 bg-white rounded-lg shadow-lg hover:shadow-xl transition">
+                <img src="https://drawdown.org/sites/default/files/solutions/solution_farmlandrestoration01.jpg" alt="Project Image" class="rounded-lg">
+                <h2 class="mt-4 text-xl font-bold text-gray-800">Abandoned Farmland Restoration</h2>
+                <p class="mt-2 text-gray-600">Restoration can bring degraded farmland back into productivity and sequester carbon in the process.</p>
+                <a href="/solutions/projects/1" class="inline-block mt-4 py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">View Project</a>
+            </div>
+            <div class="card p-6 bg-white rounded-lg shadow-lg hover:shadow-xl transition">
+                <img src="https://drawdown.org/sites/default/files/solutions2020/solution_bicycle_infrastructure.jpg" alt="Project Image" class="rounded-lg">
+                <h2 class="mt-4 text-xl font-bold text-gray-800">Bicycle Infrastructure</h2>
+                <p class="mt-2 text-gray-600">Infrastructure is essential for supporting safe and abundant bicycle use, which curbs emissions by reducing the need for fossil-fuel-dependent transportation.</p>
+                <a href="/solutions/projects/2" class="inline-block mt-4 py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">View Project</a>
+            </div>
+            <div class="card p-6 bg-white rounded-lg shadow-lg hover:shadow-xl transition">
+                <img src="https://drawdown.org/sites/default/files/solutions/solution_biomass01.jpg" alt="Project Image" class="rounded-lg">
+                <h2 class="mt-4 text-xl font-bold text-gray-800">Biomass Power</h2>
+                <p class="mt-2 text-gray-600">Biomass feedstock can replace fossil fuels for generating heat and electricity. Perennial biomass offers a “bridge” to a clean, renewable energy future.</p>
+                <a href="/solutions/projects/3" class="inline-block mt-4 py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">View Project</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
