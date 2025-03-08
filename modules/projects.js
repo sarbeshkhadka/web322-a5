@@ -3,51 +3,58 @@ const sectorData = require("../data/sectorData");
 
 let projects = [];
 
+// Initialize projects by merging sector data
 function initialize() {
     return new Promise((resolve, reject) => {
-        if (!projectData || !sectorData) {
-            reject("Data loading failed.");
-        } else {
-            projects = projectData.map(project => {
-                let sector = sectorData.find(s => s.id === project.sector_id);
-                return { ...project, sector: sector ? sector.sector_name : "Unknown" };
-            });
-            resolve();
+        if (!Array.isArray(projectData) || !Array.isArray(sectorData)) {
+            reject("Invalid or missing data.");
+            return;
         }
+
+        projects = projectData.map(project => {
+            const sector = sectorData.find(s => s.id === project.sector_id);
+            return { ...project, sector: sector ? sector.sector_name : "Unknown" };
+        });
+
+        resolve();
     });
 }
 
+// Get all projects
 function getAllProjects() {
     return new Promise((resolve, reject) => {
-        if (projects.length > 0) {
-            resolve(projects);
-        } else {
-            reject("No projects found.");
-        }
+        projects.length > 0 ? resolve(projects) : reject(new Error("No projects found."));
     });
 }
 
+// Get a project by ID
 function getProjectById(projectId) {
     return new Promise((resolve, reject) => {
-        let project = projects.find(p => p.id === projectId);
-        if (project) {
-            resolve(project);
-        } else {
-            reject("Project not found.");
+        if (isNaN(projectId)) {
+            reject(new Error("Invalid project ID."));
+            return;
         }
+
+        const project = projects.find(p => p.id === projectId);
+        project ? resolve(project) : reject(new Error("Project not found."));
     });
 }
 
+// Get projects filtered by sector
 function getProjectsBySector(sector) {
     return new Promise((resolve, reject) => {
-        let filteredProjects = projects.filter(p => 
+        if (!sector || typeof sector !== "string") {
+            reject(new Error("Sector parameter is required and must be a string."));
+            return;
+        }
+
+        const filteredProjects = projects.filter(p =>
             p.sector.toLowerCase().includes(sector.toLowerCase())
         );
-        if (filteredProjects.length > 0) {
-            resolve(filteredProjects);
-        } else {
-            reject("No projects found in this sector.");
-        }
+
+        filteredProjects.length > 0
+            ? resolve(filteredProjects)
+            : reject(new Error("No projects found in this sector."));
     });
 }
 
