@@ -1,61 +1,105 @@
-const projectData = require("../data/projectData");
-const sectorData = require("../data/sectorData");
+const { Project, Sector, sequelize } = require('../models/projects');  // Correct the path if necessary
+const Sequelize = require('sequelize');
 
-let projects = [];
-
-// Initialize projects by merging sector data
+// Initialize Sequelize
 function initialize() {
-    return new Promise((resolve, reject) => {
-        if (!Array.isArray(projectData) || !Array.isArray(sectorData)) {
-            reject("Invalid or missing data.");
-            return;
-        }
-
-        projects = projectData.map(project => {
-            const sector = sectorData.find(s => s.id === project.sector_id);
-            return { ...project, sector: sector ? sector.sector_name : "Unknown" };
+    return sequelize.sync() // Sync the models with the database
+        .then(() => {
+            console.log("Database synchronized.");
+            return Promise.resolve();
+        })
+        .catch((err) => {
+            console.log("Failed to sync database:", err);
+            return Promise.reject(err);
         });
+}
 
-        resolve();
+// Get all projects with associated sector data
+function getAllProjects(sector) {
+    return Project.findAll({
+        include: [{
+            model: Sector,
+            required: false  // This ensures you can fetch projects without sectors as well
+        }],
+        where: sector ? {
+            '$Sector.sector_name$': {
+                [Sequelize.Op.iLike]: `%${sector}%` // Case-insensitive search for sector name
+            }
+        } : {}
+    })
+    .then(projects => {
+        if (projects.length === 0) {
+            return Promise.reject(new Error("No projects found."));
+        }
+        return Promise.resolve(projects); // Return the list of projects
+    })
+    .catch(err => {
+        return Promise.reject(new Error("Unable to retrieve projects: " + err.message));
     });
 }
 
-// Get all projects
-function getAllProjects() {
-    return new Promise((resolve, reject) => {
-        projects.length > 0 ? resolve(projects) : reject(new Error("No projects found."));
-    });
-}
-
-// Get a project by ID
+// Get project by id with associated sector data
 function getProjectById(projectId) {
-    return new Promise((resolve, reject) => {
-        if (isNaN(projectId)) {
-            reject(new Error("Invalid project ID."));
-            return;
+    return Project.findOne({ // Use findOne since you want a single project
+        where: { id: projectId },
+        include: [{
+            model: Sector, // Include Sector data
+            required: false
+        }],
+    })
+    .then(project => {
+        if (!project) {
+            return Promise.reject(new Error("Unable to find requested project"));
         }
-
-        const project = projects.find(p => p.id === projectId);
-        project ? resolve(project) : reject(new Error("Project not found."));
+        return Promise.resolve(project); // Return the single project
+    })
+    .catch(err => {
+        return Promise.reject(new Error("Unable to retrieve project: " + err.message));
     });
 }
 
-// Get projects filtered by sector
+
+// Get projects by sector name with associated sector data
 function getProjectsBySector(sector) {
-    return new Promise((resolve, reject) => {
-        if (!sector || typeof sector !== "string") {
-            reject(new Error("Sector parameter is required and must be a string."));
-            return;
+    return Project.findAll({
+        include: [{
+            model: Sector,
+            required: false // This ensures you can get projects even if they don't have a sector
+        }],
+        where: {
+            '$Sector.sector_name$': {
+                [Sequelize.Op.iLike]: `%${sector}%` // Case-insensitive search for sector name
+            }
         }
-
-        const filteredProjects = projects.filter(p =>
-            p.sector.toLowerCase().includes(sector.toLowerCase())
-        );
-
-        filteredProjects.length > 0
-            ? resolve(filteredProjects)
-            : reject(new Error("No projects found in this sector."));
+    })
+    .then(projects => {
+        if (projects.length === 0) {
+            return Promise.reject(new Error("Unable to find requested projects"));
+        }
+        return Promise.resolve(projects);
+    })
+    .catch(err => {
+        return Promise.reject(new Error("Unable to retrieve projects: " + err.message));
     });
 }
 
-module.exports = { initialize, getAllProjects, getProjectById, getProjectsBySector };
+// Add this to your projectData.js (or the appropriate file handling project data)
+
+function getAllSectors() {
+    return Sector.findAll()  // Fetch all sectors from the database
+        .then(sectors => {
+            return sectors;
+        })
+        .catch(err => {
+            throw new Error("Unable to retrieve sectors: " + err.message);
+        });
+}
+
+
+module.exports = {
+    initialize,
+    getAllProjects,
+    getProjectById,
+    getProjectsBySector,
+    getAllSectors  // Export this function so it can be used in server.js
+};

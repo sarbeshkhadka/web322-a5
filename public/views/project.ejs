@@ -37,13 +37,26 @@
         <!-- Project Sector -->
         <div class="bg-white p-6 rounded-lg shadow-md mb-6">
             <h2 class="text-2xl font-semibold text-gray-800 mb-4">Sector</h2>
-            <p class="text-gray-700"><%= project.sector %></p>
+            <p class="text-gray-700"><%= project.Sector.sector_name %></p>
         </div>
 
         <!-- Link to the Original Source -->
         <div class="text-center mt-6">
             <a href="<%= project.original_source_url %>" target="_blank" class="text-blue-500 hover:underline">Read more about this project</a>
         </div>
+
+        <!-- Edit Project Button -->
+<div class="text-center mt-6">
+    <a href="/solutions/projects/<%= project.id %>/edit" class="bg-green-500 text-white py-2 px-6 rounded-lg hover:bg-green-600 transition duration-300">Edit Project</a>
+</div>
+
+
+        <form action="/solutions/projects/<%= project.id %>/delete" method="POST" class="inline-block" onsubmit="return confirmDelete()">
+            <button type="submit" class="bg-red-500 text-white py-2 px-6 rounded-lg hover:bg-red-600 transition duration-300">
+                Delete Project
+            </button>
+        </form>
+        
 
         <!-- Back to Projects Button -->
         <div class="text-center mt-6">

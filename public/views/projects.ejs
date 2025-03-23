@@ -15,22 +15,10 @@
         <!-- Page Title -->
         <h1 class="text-4xl font-bold text-center text-gray-800 mb-6">Climate Solutions Projects</h1>
 
-        <!-- Filtered Sector -->
-        <div class="mb-6">
-            <p class="text-xl font-semibold">Filter by Sector:</p>
-            <div class="flex space-x-4 mt-4">
-                <% sectorData.forEach(sectorItem => { %>
-                    <a href="/solutions/projects?sector=<%= sectorItem.sector_name %>" class="p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-300 <%= sector === sectorItem.sector_name ? 'bg-blue-700' : '' %>">
-                        <%= sectorItem.sector_name %>
-                    </a>
-                <% }); %>
-            </div>
-        </div>
-        
         <!-- Projects List -->
-        <ul class="space-y-6">
+        <ul id="projects-list" class="space-y-6">
             <% projects.forEach(project => { %>
-                <li class="bg-white p-6 rounded-lg shadow-md hover:bg-gray-100 transition duration-300">
+                <li class="project bg-white p-6 rounded-lg shadow-md hover:bg-gray-100 transition duration-300" data-sector="<%= project.Sector.sector_name %>">
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
                         <!-- Title Column -->
                         <div class="col-span-1">
@@ -38,17 +26,17 @@
                                 <%= project.title %>
                             </a>
                         </div>
-        
+
                         <!-- Summary Column -->
                         <div class="col-span-1">
                             <p class="text-gray-600 mt-2 mb-4"><%= project.summary_short %></p>
                         </div>
-        
+
                         <!-- Sector Column -->
                         <div class="col-span-1">
-                            <span class="text-gray-600"> - <%= project.sector %></span>
+                            <span class="text-gray-600"> - <%= project.Sector.sector_name %></span>
                         </div>
-        
+
                         <!-- Details Button Column -->
                         <div class="col-span-1 mt-4 flex items-center justify-center">
                             <a href="/solutions/projects/<%= project.id %>" class="inline-block bg-blue-500 text-white py-2 px-6 rounded-lg hover:bg-blue-600 transition duration-300">View Details</a>
@@ -57,8 +45,27 @@
                 </li>
             <% }); %>
         </ul>
-        
+
     </div>
+
+    <script>
+        // Function to filter projects based on selected sector
+        function filterBySector(sector) {
+            // Get all project items
+            const projects = document.querySelectorAll('.project');
+            
+            // Loop through each project and toggle visibility based on the selected sector
+            projects.forEach(project => {
+                const projectSector = project.getAttribute('data-sector');
+                
+                if (sector === "All" || projectSector === sector) {
+                    project.style.display = 'block'; // Show project
+                } else {
+                    project.style.display = 'none'; // Hide project
+                }
+            });
+        }
+    </script>
 
 </body>
 </html>
