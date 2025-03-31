@@ -1,0 +1,28 @@
+{
+  "version": 2,
+  "buildCommand": "npm run vercel-build",
+  "outputDirectory": ".",
+  "framework": "nodejs",
+  "includeFiles": [
+    "public/**",
+    "views/**",
+    "models/**",
+    "modules/**",
+    "server.js",
+    "package.json",
+    "vercel.json"
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "server.js"
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production",
+    "PGHOST": "@pghost",
+    "PGDATABASE": "@pgdatabase",
+    "PGUSER": "@pguser",
+    "PGPASSWORD": "@pgpassword"
+  }
+}
