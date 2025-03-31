@@ -37,13 +37,20 @@ app.use(express.static(path.join(__dirname, "public")));
 projectData
   .initialize()
   .then(() => {
-    app.listen(PORT, () => {
-      console.log(`Server running at http://localhost:${PORT}`);
-    });
+    console.log("Database initialized successfully");
   })
   .catch((err) => {
     console.error("Initialization failed:", err);
   });
+
+// Export the Express app for Vercel
+module.exports = app;
+
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`Server running at http://localhost:${PORT}`);
+  });
+}
 
 // Routes
 
