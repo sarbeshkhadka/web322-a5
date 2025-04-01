@@ -1,19 +1,23 @@
 {
-  "name": "assignment2web",
+  "name": "web322-a5-project",
   "version": "1.0.0",
+  "description": "WEB322 Assignment 5 – Node/Express project with Sequelize, PostgreSQL, authentication, and TailwindCSS+DaisyUI.",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "tw:build": "npx tailwindcss -i ./public/input.css -o ./public/css/style.css",
+    "tw:build": "npx tailwindcss -i ./public/input.css -o ./public/css/style.css --minify",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Sarbesh Khadka",
   "license": "ISC",
-  "description": "",
+  "keywords": [],
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "dotenv": "^16.4.7",
     "ejs": "^3.1.10",
     "express": "^4.21.2",
+    "express-fileupload": "^1.4.0",
+    "express-session": "^1.17.3",
     "node-fetch": "^3.3.2",
     "pg": "^8.14.1",
     "pg-hstore": "^2.3.4",

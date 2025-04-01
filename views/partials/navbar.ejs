@@ -1,0 +1,27 @@
+<!-- Navbar Partial: Navigation bar with active link highlighting and conditional auth links -->
+<div class="navbar bg-base-100 shadow-sm px-4">
+    <div class="flex-1">
+      <!-- Brand/Logo -->
+      <a href="/" class="btn btn-ghost normal-case text-xl">Climate Solutions</a>
+    </div>
+    <div class="flex-none">
+      <ul class="menu menu-horizontal px-1">
+        <!-- Public Links -->
+        <li><a class="<%= (page === 'home') ? 'active' : '' %>" href="/">Home</a></li>
+        <li><a class="<%= (page === 'projects') ? 'active' : '' %>" href="/solutions/projects">Projects</a></li>
+        <li><a class="<%= (page === 'about') ? 'active' : '' %>" href="/about">About</a></li>
+        <!-- Protected Link (visible only to dataEntryClerk) -->
+        <% if (user && user.role === 'dataEntryClerk') { %>
+          <li><a class="<%= (page === 'addProject') ? 'active' : '' %>" href="/solutions/addProject">Add Project</a></li>
+        <% } %>
+        <!-- Authentication Links -->
+        <% if (user) { %>
+          <li><a href="/logout">Logout (<%= user.email %>)</a></li>
+        <% } else { %>
+          <li><a class="<%= (page === 'login') ? 'active' : '' %>" href="/login">Log In</a></li>
+          <li><a class="<%= (page === 'register') ? 'active' : '' %>" href="/register">Sign Up</a></li>
+        <% } %>
+      </ul>
+    </div>
+  </div>
+  

@@ -1,0 +1,74 @@
+@import '_reset';
+
+$font-stack: Helvetica, sans-serif;
+$primary-color: #333;
+
+@mixin overlay($offset: 0) {
+  bottom: $offset;
+  left: $offset;
+  position: absolute;
+  right: $offset;
+  top: $offset;
+}
+
+body {
+  font: 100% $font-stack;
+  color: $primary-color;
+}
+
+nav {
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    display: inline-block;
+  }
+
+  a {
+    display: block;
+    padding: 6px 12px;
+    text-decoration: none;
+  }
+}
+
+.modal {
+  @include overlay(150px);
+}
+
+.message {
+  border: 1px solid #ccc;
+  padding: 10px;
+  color: #333;
+}
+
+.success {
+  @extend .message;
+  border-color: green;
+}
+
+.error {
+  @extend .message;
+  border-color: red;
+}
+
+.warning {
+  @extend .message;
+  border-color: yellow;
+}
+
+.container {
+  width: 100%;
+}
+
+article[role='main'] {
+  float: left;
+  width: calc(600px / 960px * 100%); // gets 600px as a percentage of 960px
+}
+
+aside[role='complementary'] {
+  float: right;
+  width: calc(300px / 960px * 100%); // gets 300px as a percentage of 960px
+}

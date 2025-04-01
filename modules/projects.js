@@ -1,105 +1,106 @@
-const { Project, Sector, sequelize } = require('../models/projects');  // Correct the path if necessary
-const Sequelize = require('sequelize');
+/*************************************************
+ * Data Service Module for Projects and Sectors
+ *************************************************/
+const { Op, Sector, Project, initialize } = require("../models/projects");
 
-// Initialize Sequelize
-function initialize() {
-    return sequelize.sync() // Sync the models with the database
-        .then(() => {
-            console.log("Database synchronized.");
-            return Promise.resolve();
-        })
-        .catch((err) => {
-            console.log("Failed to sync database:", err);
-            return Promise.reject(err);
-        });
+/**
+ * Initialize the database (calls sequelize sync).
+ * Returns a promise that resolves if successful.
+ */
+function initializeDB() {
+  return initialize();
 }
 
-// Get all projects with associated sector data
-function getAllProjects(sector) {
-    return Project.findAll({
-        include: [{
-            model: Sector,
-            required: false  // This ensures you can fetch projects without sectors as well
-        }],
-        where: sector ? {
-            '$Sector.sector_name$': {
-                [Sequelize.Op.iLike]: `%${sector}%` // Case-insensitive search for sector name
-            }
-        } : {}
-    })
-    .then(projects => {
-        if (projects.length === 0) {
-            return Promise.reject(new Error("No projects found."));
-        }
-        return Promise.resolve(projects); // Return the list of projects
-    })
-    .catch(err => {
-        return Promise.reject(new Error("Unable to retrieve projects: " + err.message));
-    });
+/**
+ * Retrieve all projects from the database, including their Sector data.
+ * Resolves to an array of project objects.
+ */
+function getAllProjects() {
+  return Project.findAll({ include: Sector });
 }
 
-// Get project by id with associated sector data
-function getProjectById(projectId) {
-    return Project.findOne({ // Use findOne since you want a single project
-        where: { id: projectId },
-        include: [{
-            model: Sector, // Include Sector data
-            required: false
-        }],
-    })
-    .then(project => {
-        if (!project) {
-            return Promise.reject(new Error("Unable to find requested project"));
-        }
-        return Promise.resolve(project); // Return the single project
-    })
-    .catch(err => {
-        return Promise.reject(new Error("Unable to retrieve project: " + err.message));
-    });
+/**
+ * Retrieve a single project by its ID (primary key), including Sector info.
+ * Resolves to the project object if found, otherwise rejects with an error.
+ */
+function getProjectById(id) {
+  return Project.findOne({ where: { id: id }, include: Sector }).then(project => {
+    if (!project) {
+      throw new Error("Unable to find requested project");
+    }
+    return project;
+  });
 }
 
-
-// Get projects by sector name with associated sector data
-function getProjectsBySector(sector) {
-    return Project.findAll({
-        include: [{
-            model: Sector,
-            required: false // This ensures you can get projects even if they don't have a sector
-        }],
-        where: {
-            '$Sector.sector_name$': {
-                [Sequelize.Op.iLike]: `%${sector}%` // Case-insensitive search for sector name
-            }
-        }
-    })
-    .then(projects => {
-        if (projects.length === 0) {
-            return Promise.reject(new Error("Unable to find requested projects"));
-        }
-        return Promise.resolve(projects);
-    })
-    .catch(err => {
-        return Promise.reject(new Error("Unable to retrieve projects: " + err.message));
-    });
+/**
+ * Retrieve all projects whose Sector name contains the given string (case-insensitive).
+ * Resolves to an array of matching projects.
+ */
+function getProjectsBySector(sectorName) {
+  return Project.findAll({ 
+    include: Sector,
+    where: { '$Sector.sector_name$': { [Op.iLike]: `%${sectorName}%` } }
+  }).then(projects => {
+    if (!projects || projects.length === 0) {
+      throw new Error("Unable to find requested projects");
+    }
+    return projects;
+  });
 }
 
-// Add this to your projectData.js (or the appropriate file handling project data)
-
+/**
+ * Retrieve all sectors from the database.
+ * Resolves to an array of Sector objects.
+ */
 function getAllSectors() {
-    return Sector.findAll()  // Fetch all sectors from the database
-        .then(sectors => {
-            return sectors;
-        })
-        .catch(err => {
-            throw new Error("Unable to retrieve sectors: " + err.message);
-        });
+  return Sector.findAll();
 }
 
+/**
+ * Add a new project to the database.
+ * `projectData` should be an object containing title, feature_img_url, summary_short, intro_short, impact, original_source_url, and sector_id.
+ * Resolves to the created project.
+ */
+function addProject(projectData) {
+  return Project.create(projectData);
+}
 
+/**
+ * Update an existing project identified by `id` with the new data in `projectData`.
+ * Resolves when update is successful, or rejects with an error message if not.
+ */
+function editProject(id, projectData) {
+  return Project.findByPk(id).then(project => {
+    if (!project) {
+      throw new Error("Project not found");
+    }
+    // Update fields
+    Object.assign(project, projectData);
+    return project.save();  // save changes
+  });
+}
+
+/**
+ * Delete the project with the given `id` from the database.
+ * Resolves when deletion is successful, otherwise rejects with error.
+ */
+function deleteProject(id) {
+  return Project.destroy({ where: { id: id } }).then(deletedCount => {
+    if (!deletedCount) {
+      throw new Error("Project not found or already deleted");
+    }
+    return; // deletion successful (resolve with no data)
+  });
+}
+
+// Export all functions for use in server routes
 module.exports = {
-    initialize,
-    getAllProjects,
-    getProjectById,
-    getProjectsBySector,
-    getAllSectors  // Export this function so it can be used in server.js
+  initializeDB,
+  getAllProjects,
+  getProjectById,
+  getProjectsBySector,
+  getAllSectors,
+  addProject,
+  editProject,
+  deleteProject
 };

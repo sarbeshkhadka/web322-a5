@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= project.title %> - Climate Solutions</title>
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-gray-50 font-sans">
+  <%- include('partials/navbar', { page: 'projects', user: user }) %>
+  <div class="container mx-auto p-6">
+    <!-- Project Title -->
+    <h1 class="text-4xl font-bold text-center text-gray-800 mb-4"><%= project.title %></h1>
+    <!-- Short Summary -->
+    <p class="text-xl text-center text-gray-600 mb-6"><%= project.summary_short %></p>
+    <!-- Feature Image -->
+    <div class="w-full mb-6">
+      <img src="<%= project.feature_img_url %>" alt="<%= project.title %>" class="w-full h-72 object-cover rounded-lg shadow-lg">
+    </div>
+    <!-- Introduction Section -->
+    <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4">Introduction</h2>
+      <p class="text-gray-700"><%= project.intro_short %></p>
+    </div>
+    <!-- Impact Section -->
+    <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4">Impact</h2>
+      <p class="text-gray-700"><%= project.impact %></p>
+    </div>
+    <!-- Sector Section -->
+    <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4">Sector</h2>
+      <p class="text-gray-700"><%= project.Sector.sector_name %></p>
+    </div>
+    <!-- Original Source Link -->
+    <div class="text-center mt-8">
+      <a href="<%= project.original_source_url %>" target="_blank" class="text-blue-500 hover:underline">
+        Read more about this project ↗
+      </a>
+    </div>
+
+    <!-- Edit/Delete buttons (only visible to authorized user) -->
+    <% if (user && user.role === 'dataEntryClerk') { %>
+      <div class="text-center mt-10 space-x-4">
+        <a href="/solutions/projects/<%= project.id %>/edit" class="btn btn-success">Edit Project</a>
+        <form action="/solutions/projects/<%= project.id %>/delete" method="POST" class="inline-block" onsubmit="return confirm('Are you sure you want to delete this project?');">
+          <button type="submit" class="btn btn-error">Delete Project</button>
+        </form>
+      </div>
+    <% } %>
+
+    <!-- Back to Projects -->
+    <div class="text-center mt-8">
+      <a href="/solutions/projects" class="btn">← Back to Projects</a>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Projects - Climate Solutions</title>
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-gray-50 font-sans">
+  <%- include('partials/navbar', { page: 'projects', user: user }) %>
+  <div class="container mx-auto p-6">
+    <h1 class="text-4xl font-bold text-center text-gray-800 mb-6">Climate Solutions Projects</h1>
+
+    <!-- List projects grouped by Sector -->
+    <% 
+      // Group projects by sector name
+      let projectsBySector = {};
+      projects.forEach(proj => {
+        const sectorName = proj.Sector.sector_name;
+        if (!projectsBySector[sectorName]) projectsBySector[sectorName] = [];
+        projectsBySector[sectorName].push(proj);
+      });
+      const sectorNames = Object.keys(projectsBySector);
+    %>
+
+    <% sectorNames.forEach(secName => { %>
+      <h2 class="text-2xl font-semibold text-gray-800 mt-8 mb-4"><%= secName %></h2>
+      <ul class="space-y-4">
+        <% projectsBySector[secName].forEach(project => { %>
+          <li class="bg-white p-5 rounded-lg shadow-md">
+            <div class="md:flex md:items-center md:justify-between">
+              <!-- Project title and sector -->
+              <div>
+                <a href="/solutions/projects/<%= project.id %>" class="text-xl font-semibold text-blue-600 hover:underline"><%= project.title %></a>
+                <span class="text-gray-600 ml-2">(<%= project.Sector.sector_name %>)</span>
+              </div>
+              <!-- Project summary -->
+              <p class="text-gray-700 mt-2 md:mt-0 md:max-w-xl"><%= project.summary_short %></p>
+              <!-- View details button -->
+              <div class="mt-3 md:mt-0">
+                <a href="/solutions/projects/<%= project.id %>" class="btn btn-primary btn-sm">View Details</a>
+              </div>
+            </div>
+          </li>
+        <% }); %>
+      </ul>
+    <% }); %>
+  </div>
+</body>
+</html>
